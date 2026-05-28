@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt #{{ sale.id }}</title>
+    <style>
+        @page {
+            size: auto;
+            margin: 0mm;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            width: 80mm;
+            /* Standard Receipt Width */
+            margin: 0 auto;
+            padding: 5mm;
+            font-size: 14px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 10px;
+        }
+
+        .details {
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th {
+            text-align: left;
+            border-bottom: 1px solid #000;
+        }
+
+        .total-row {
+            border-top: 1px dashed #000;
+            margin-top: 10px;
+            padding-top: 5px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 10px;
+            border-top: 1px dashed #000;
+            padding-top: 10px;
+        }
+
+        /* Hide buttons when printing */
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="no-print" style="margin-bottom: 20px;">
+        <button onclick="window.print()">Print Receipt</button>
+        <a href="{% url 'pos_view' %}">New Sale</a>
+    </div>
+
+    <div class="header text-center">
+        <h2 style="margin:0;">HAVY PHARMACY</h2>
+        <p style="margin:5px 0;">Omu-Aran, Kwara State</p>
+    </div>
+
+    <div class="details">
+        <div><strong>Receipt ID:</strong> #{{ sale.id }}</div>
+        <div><strong>Date:</strong> {{ sale.timestamp|date:"d/m/Y H:i" }}</div>
+        <div><strong>Cashier:</strong> {{ sale.salesperson.username }}</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in sale.items.all %}
+            <tr>
+                <td>{{ item.medicine.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>₦{{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total-row">
+        <div style="display:flex; justify-content:space-between;">
+            <span>TOTAL:</span>
+            <span>₦{{ sale.total_amount }}</span>
+        </div>
+    </div>
+
+    <div class="footer text-center">
+        <p>Thank you for your patronage!</p>
+        <p>Stay Healthy!</p>
+    </div>
+
+    <script>
+        // Trigger print dialog automatically
+        window.onload = function () {
+            window.print();
+        };
+
+    </script>
+</body>
+
+</html>

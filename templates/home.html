@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    :root {
+        --color-navy: #1a4c4e;     /* Color 1 */
+        --color-teal: #20b2aa;     /* Color 2 */
+    }
+
+    .teal-concept-page {
+        /* Gradient uses two colors for a cohesive, professional look */
+        background: linear-gradient(135deg, var(--color-navy) 0%, #065a60 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 60px;
+        color: white;
+    }
+
+    .concept-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 40px;
+        padding: 80px;
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 80px;
+    }
+
+    .text-teal { color: var(--color-teal); }
+
+    .icon-wrapper {
+        position: relative;
+        width: 280px;
+        height: 280px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(32, 178, 170, 0.1);
+        border-radius: 50%;
+        transition: 0.6s ease;
+    }
+
+    .icon-wrapper::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 1px solid var(--color-teal);
+        animation: pulse 3s infinite ease-out;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.15); opacity: 0.3; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .icon-wrapper:hover {
+        transform: rotate(15deg);
+        box-shadow: 0 0 40px rgba(32, 178, 170, 0.2);
+    }
+
+    .glow-btn {
+        background: transparent;
+        border: 2px solid var(--color-teal);
+        color: var(--color-teal);
+        padding: 18px 40px;
+        text-transform: uppercase;
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.3em;
+        transition: all 0.4s ease;
+        border-radius: 50px;
+        display: inline-block;
+        margin-top: 20px;
+    }
+
+    .glow-btn:hover {
+        background: var(--color-teal);
+        color: white;
+        box-shadow: 0 10px 30px rgba(32, 178, 170, 0.3);
+    }
+</style>
+
+<div class="teal-concept-page">
+    <div class="concept-card">
+        <div style="flex: 1;">
+            <div class="fw-black mb-4" style="letter-spacing: 0.5em; font-size: 1rem; opacity: 0.7;">HAVY</div>
+            <h1 class="display-1 fw-bold mb-4" style="line-height: 0.9;">
+                PHARMACY<br><span class="text-teal">CONCEPT</span>
+            </h1>
+            <p class="opacity-75 mb-4" style="line-height: 1.6; max-width: 400px;">
+                An advanced ecosystem for inventory control and clinical management. 
+                <span class="text-teal fw-bold">Designed for the future of pharmacy operations.</span>
+            </p>
+            <a href="{% url 'login' %}" class="glow-btn">Access Secure Dashboard</a>
+        </div>
+
+        <div style="flex: 0 0 300px;" class="text-center">
+            <div class="icon-wrapper">
+                <span class="text-teal" style="font-size: 9rem; line-height: 1;">⚗</span>
+            </div>
+            <p class="mt-4 opacity-50" style="font-size: 9px; letter-spacing: 0.4em; text-transform: uppercase;">
+                Systematic Precision
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

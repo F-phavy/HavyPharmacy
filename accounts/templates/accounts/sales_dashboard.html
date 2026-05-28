@@ -1,0 +1,389 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap');
+
+    body {
+        margin: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #f8f9fd;
+    }
+
+    .dashboard-container {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* Sleek Sidebar */
+    .sidebar {
+        width: 260px;
+        background: white;
+        border-right: 1px solid #edf2f7;
+        padding: 40px 24px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .brand-name {
+        font-size: 24px;
+        font-weight: 700;
+        color: #036a6a;
+        margin-bottom: 50px;
+        letter-spacing: -1px;
+    }
+
+    .nav-item {
+        padding: 12px 16px;
+        color: #64748b;
+        text-decoration: none;
+        margin-bottom: 8px;
+        border-radius: 12px;
+        transition: all 0.2s;
+        font-weight: 500;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+        background: #f3f0ff;
+        color: #036a6a;
+    }
+
+    /* Main Area */
+    .main-content {
+        flex: 1;
+        padding: 50px 60px;
+        overflow-y: auto;
+    }
+
+    /* Premium Welcome Banner */
+    .welcome-banner {
+        background: linear-gradient(135deg, #036a6a 0%, #13c6c6 100%);
+        border-radius: 32px;
+        padding: 40px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+        box-shadow: 0 20px 40px rgba(3, 106, 106, 0.2);
+    }
+
+    .welcome-text h1 {
+        margin: 0;
+        font-size: 32px;
+        font-weight: 600;
+    }
+
+    .welcome-text p {
+        opacity: 0.9;
+        margin: 8px 0 0 0;
+    }
+
+    /* Attendance Buttons Style definitions */
+    .attendance-control form {
+        margin: 0;
+    }
+
+    .d-flex { display: flex; }
+    .gap-2 { gap: 8px; }
+    .w-50 { width: 50%; }
+    .w-100 { width: 100%; }
+
+    .btn-premium, .btn-warning, .btn-danger, .btn-success, .btn-secondary {
+        padding: 14px 24px;
+        border-radius: 16px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .btn-premium { background: white; color: #036a6a; }
+    .btn-premium:hover { transform: translateY(-2px); }
+    
+    .btn-warning { background: #ffb800; color: #1e293b; }
+    .btn-warning:hover { transform: translateY(-2px); background: #e6a600; }
+    
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-danger:hover { transform: translateY(-2px); background: #dc2626; }
+    
+    .btn-success { background: #10b981; color: white; }
+    .btn-success:hover { transform: translateY(-2px); background: #059669; }
+
+    .btn-secondary { background: rgba(255, 255, 255, 0.2); color: white; cursor: not-allowed; }
+
+    /* Metric Cards */
+    .metrics-row {
+        display: flex;
+        gap: 24px;
+    }
+
+    .card {
+        flex: 1;
+        padding: 30px;
+        border-radius: 24px;
+        background: white;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    }
+
+    .card span {
+        color: #94a3b8;
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .card h3 {
+        margin: 15px 0 0 0;
+        font-size: 28px;
+        color: #1e293b;
+    }
+
+    .timer-display {
+        margin-top: 15px;
+        font-size: 32px;
+        font-weight: 700;
+        color: #036a6a;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+        margin-top: 24px;
+    }
+
+    .list-card {
+        background: white;
+        padding: 24px;
+        border-radius: 24px;
+        border: 1px solid #f1f5f9;
+    }
+
+    .list-card h4 {
+        margin-top: 0;
+        color: #1e293b;
+        margin-bottom: 16px;
+    }
+
+    .trend-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #f8fafc;
+    }
+
+    .trend-item:last-child {
+        border-bottom: none;
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="sidebar">
+        <div class="brand-name">Havy.</div>
+        <nav style="display: flex; flex-direction: column;">
+            <a href="{% url 'sales_dashboard' %}" class="nav-item active">Dashboard</a>
+            
+            {% if attendance and attendance.status == 'active' %}
+                <a href="{% url 'pos_view' %}" class="nav-item">Point of Sale</a>
+            {% else %}
+                <a href="#" class="nav-item" style="opacity: 0.4; cursor: not-allowed;" title="Clock in to activate shift and unlock POS">Point of Sale (Locked)</a>
+            {% endif %}
+
+            <a href="{% url 'stock_list' %}" class="nav-item">Stock List</a>
+            
+            <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: none;">
+                {% csrf_token %}
+            </form>
+
+            <a href="#" class="nav-item"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Logout
+            </a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        {% if messages %}
+            {% for message in messages %}
+                <div style="padding: 16px; border-radius: 12px; margin-bottom: 20px; font-weight: 600; 
+                    background: {% if message.tags == 'error' %}#fee2e2; color: #b91c1c; border: 1px solid #fca5a5;{% else %}#d1fae5; color: #065f46; border: 1px solid #6ee7b7;{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="welcome-banner">
+            <div class="welcome-text">
+                <h1>Hello, {{ request.user.username }}!</h1>
+                <p>Welcome, track your progress.</p>
+            </div>
+
+            <div class="attendance-control">
+                {% if not attendance or attendance.status == 'inactive' and not attendance.clock_out %}
+                    <form action="{% url 'mark_attendance' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="clock_in">
+                        <button type="submit" class="btn-premium">Start Shift (Clock In)</button>
+                    </form>
+
+                {% elif attendance.status == 'active' %}
+                    <div class="d-flex gap-2">
+                        <form action="{% url 'mark_attendance' %}" method="POST" class="w-50">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="go_on_break">
+                            <button type="submit" class="btn-warning w-100">Go on Break</button>
+                        </form>
+                        
+                        <form action="{% url 'mark_attendance' %}" method="POST" class="w-50">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="clock_out">
+                            <button type="submit" class="btn-danger w-100">End Shift</button>
+                        </form>
+                    </div>
+
+                {% elif attendance.status == 'break' %}
+                    <div class="d-flex gap-2">
+                        <form action="{% url 'mark_attendance' %}" method="POST" class="w-50">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="clock_in">
+                            <button type="submit" class="btn-success w-100">Resume Shift</button>
+                        </form>
+                        
+                        <form action="{% url 'mark_attendance' %}" method="POST" class="w-50">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="clock_out">
+                            <button type="submit" class="btn-danger w-100">End Shift</button>
+                        </form>
+                    </div>
+
+                {% else %}
+                    <button class="btn-secondary w-100" disabled>Shift Completed Today</button>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="metrics-row">
+            <div class="card">
+                <span>Today's Sales</span>
+                <h3>₦{{ user_daily_total|default:"0.00"|floatformat:2 }}</h3>
+            </div>
+
+            <div class="card">
+                <span>Inventory Status</span>
+                <div style="display: flex; gap: 20px; align-items: center; margin-top: 10px;">
+                    <div>
+                        <h3 style="color: {% if low_stock_count > 0 %} #ef4444{% else %}#10b981{% endif %}; margin: 0;">
+                            {{ low_stock_count }}
+                        </h3>
+                        <small style="color: #94a3b8; font-size: 10px;">LOW STOCK</small>
+                    </div>
+                    <div style="border-left: 1px solid #edf2f7; padding-left: 20px;">
+                        <h3 style="color: {% if near_expiry_count > 0 %}#f59e0b{% else %}#10b981{% endif %}; margin: 0;">
+                            {{ near_expiry_count }}
+                        </h3>
+                        <small style="color: #94a3b8; font-size: 10px;">EXPIRING</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <span>Current Time</span>
+                <div id="live-clock" class="timer-display">00:00:00</div>
+                <div class="shift-info" style="margin-top: 15px; border-top: 1px solid #f1f5f9; padding-top: 10px;">
+                    {% if attendance %}
+                    <small style="color: #64748b; font-weight: 500;">
+                        Shift Started: <strong>{{ attendance.clock_in|time:"H:i" }}</strong>
+                    </small>
+                    {% else %}
+                    <small style="color: #ef4444; font-weight: 500;">Not clocked in yet</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="list-card">
+                <h4>Top-Selling Medicines (Today)</h4>
+                {% if top_products %}
+                {% for product in top_products %}
+                <div class="trend-item">
+                    <div>
+                        <div style="font-weight: 600; color: #334155;">{{ product.medicine__name }}</div>
+                        <small style="color: #94a3b8;">Revenue: ₦{{ product.total_revenue|floatformat:2 }}</small>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; color: #036a6a;">{{ product.total_sold }} Sold</div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p style="color: #94a3b8; font-size: 14px;">No sales data available for today yet.</p>
+                {% endif %}
+            </div>
+
+            <div class="list-card">
+                <h4>Quick Links</h4>
+                {% if attendance and attendance.status == 'active' %}
+                    <a href="{% url 'pos_view' %}"
+                        style="display: block; text-align: center; background: #036a6a; color: white; margin-bottom: 10px; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: 600;">
+                        Open POS
+                    </a>
+                {% else %}
+                    <button disabled
+                        style="display: block; width: 100%; text-align: center; background: #e2e8f0; color: #94a3b8; margin-bottom: 10px; padding: 12px; border-radius: 12px; border: none; cursor: not-allowed; font-weight: 600;">
+                        POS Locked (Clock In)
+                    </button>
+                {% endif %}
+                <div style="margin-top: 20px;">
+                    <span style="font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">System Status</span>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                        <div style="width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></div>
+                        <span style="font-size: 14px; color: #475569;">Live & Secure</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 24px; padding: 30px; margin-top: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+            <h3 style="margin-top: 0; color: #1e293b;">Recent Sales History</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <thead>
+                    <tr style="text-align: left; color: #64748b; border-bottom: 1px solid #edf2f7;">
+                        <th style="padding: 12px;">Time</th>
+                        <th style="padding: 12px;">Medicine</th>
+                        <th style="padding: 12px;">Qty</th>
+                        <th style="padding: 12px;">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in recent_sales %}
+                    <tr style="border-bottom: 1px solid #f8f9fd;">
+                        <td style="padding: 12px;">{{ sale.sale.timestamp|date:"H:i" }}</td>
+                        <td style="padding: 12px; font-weight: 600;">{{ sale.medicine.name }}</td>
+                        <td style="padding: 12px;">{{ sale.quantity }}</td>
+                        <td style="padding: 12px; color: #036a6a; font-weight: 700;">₦{{ sale.subtotal|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="padding: 20px; text-align: center; color: #94a3b8;">No sales made today yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('live-clock').textContent = `${h}:${m}:${s}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>

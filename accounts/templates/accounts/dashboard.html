@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1>{{ title }} - {{ role }} Panel</h1>
+
+    {% if role == 'Admin' %}
+        <div class="stat-card total-money">
+            <h3>Total Pharmacy Revenue</h3>
+            <p>₦{{ grand_total }}</p>
+        </div>
+        
+        <div class="admin-actions">
+            <a href="{% url 'inventory_list' %}">Manage Stock</a>
+            <a href="/admin/">Manage Staff</a>
+        </div>
+    {% else %}
+        <div class="welcome-card">
+            <h3>Welcome back, {{ request.user.username }}</h3>
+            <p>Ready to start selling?</p>
+            <a href="{% url 'pos_view' %}" class="btn-primary">Open POS Machine</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}{% extends 'base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1>{{ title }} - {{ role }} Panel</h1>
+
+    {% if role == 'Admin' %}
+        <div class="stat-card total-money">
+            <h3>Total Pharmacy Revenue</h3>
+            <p>₦{{ grand_total }}</p>
+        </div>
+        
+        <div class="admin-actions">
+            <a href="{% url 'inventory_list' %}">Manage Stock</a>
+            <a href="/admin/">Manage Staff</a>
+        </div>
+    {% else %}
+        <div class="welcome-card">
+            <h3>Welcome back, {{ request.user.username }}</h3>
+            <p>Ready to start selling?</p>
+            <a href="{% url 'pos_view' %}" class="btn-primary">Open POS Machine</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,564 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap');
+
+    body {
+        margin: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #f8f9fd;
+        color: #1e293b;
+    }
+
+    .pos-container {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* Sidebar - Matching Dashboard */
+    .sidebar {
+        width: 260px;
+        background: white;
+        border-right: 1px solid #edf2f7;
+        padding: 40px 24px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .brand-name {
+        font-size: 24px;
+        font-weight: 700;
+        color: #036a6a;
+        margin-bottom: 50px;
+    }
+
+    .nav-item {
+        padding: 12px 16px;
+        color: #64748b;
+        text-decoration: none;
+        margin-bottom: 8px;
+        border-radius: 12px;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+    .nav-item.active {
+        background: #f3f0ff;
+        color: #036a6a;
+    }
+
+    /* Main Content Area */
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+        height: 100vh;
+        overflow: hidden;
+        background: #f8f9fd;
+    }
+
+    /* Product Section */
+    .inventory-section {
+        flex: 1;
+        min-width: 600px;
+        padding: 30px;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    .search-bar {
+        width: 100%;
+        padding: 15px 25px;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 30px;
+        font-size: 16px;
+        outline: none;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    }
+
+    .medicine-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 15px;
+    }
+
+    .med-card {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 20px;
+        border: 1px solid #f1f5f9;
+        cursor: pointer;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .med-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        border-color: #036a6a;
+    }
+
+    .med-card h4 {
+        margin: 0 0 5px 0;
+        color: #1e293b;
+    }
+
+    .med-card .price {
+        color: #036a6a;
+        font-weight: 700;
+        font-size: 18px;
+    }
+
+    .med-card .stock {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 10px;
+        display: block;
+    }
+
+    /* Cart Section */
+    .cart-section {
+        width: 400px;
+        height: 100vh;
+        background: white;
+        border-left: 1px solid #edf2f7;
+        padding: 40px 30px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cart-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 30px;
+    }
+
+    .cart-items {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .cart-items > div {
+        animation: slideIn 0.3s ease-out forwards;
+    }
+
+    .summary-box {
+        background: #f8fafc;
+        padding: 20px;
+        border-radius: 20px;
+        margin-top: 20px;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
+    .total-row {
+        border-top: 1px solid #e2e8f0;
+        padding-top: 15px;
+        margin-top: 15px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #036a6a;
+    }
+
+    .btn-checkout {
+        background: #036a6a;
+        color: white;
+        width: 100%;
+        padding: 18px;
+        border-radius: 16px;
+        border: none;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-checkout:hover {
+        background: #025555;
+    }
+
+    /* Status Badges */
+    .badge {
+        padding: 6px 12px;
+        border-radius: 99px;
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .badge-low {
+        background: #fee2e2;
+        color: #ef4444;
+    }
+
+    .badge-ok {
+        background: #f0fdf4;
+        color: #16a34a;
+    }
+
+    /* The "Add" Button appearing on hover */
+    .add-overlay {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background: #036a6a;
+        color: white;
+        width: 35px;
+        height: 35px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .med-card:hover .add-overlay {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Success "Pop" animation when clicked */
+    @keyframes cart-pop {
+        0% { transform: scale(1); }
+        50% { transform: scale(0.95); border-color: #036a6a; }
+        100% { transform: scale(1); }
+    }
+
+    .clicked-anim {
+        animation: cart-pop 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateX(20px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Mobile Adjustments */
+    @media (max-width: 1024px) {
+        .sidebar {
+            width: 80px;
+            padding: 20px 10px;
+        }
+        .sidebar .brand-name {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        .nav-item span {
+            display: none;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .main-content {
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .inventory-section, .cart-section {
+            width: 100%;
+            min-width: 100%;
+            height: auto;
+            border-left: none;
+        }
+        .cart-section {
+            border-top: 2px solid #036a6a;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .pos-container {
+            flex-direction: column;
+        }
+        .sidebar {
+            width: 100%;
+            height: auto;
+            padding: 15px;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand-name {
+            margin-bottom: 0;
+        }
+        .sidebar nav {
+            flex-direction: row !important;
+            gap: 10px;
+        }
+    }
+</style>
+
+<div class="pos-container">
+    <div class="sidebar">
+        <div class="brand-name">Havy.</div>
+        <nav style="display: flex; flex-direction: column;">
+            <a href="{% url 'sales_dashboard' %}" class="nav-item"><span>Dashboard</span></a>
+            <a href="{% url 'pos_view' %}" class="nav-item active"><span>Point of Sale</span></a>
+            <a href="{% url 'stock_list' %}" class="nav-item"><span>Stock List</span></a>
+            <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: none;">
+                {% csrf_token %}
+            </form>
+            <a href="#" class="nav-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><span>Logout</span></a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <section class="inventory-section">
+            <div class="header-actions" style="display: flex; gap: 15px; align-items: center; margin-bottom: 30px;">
+                <input type="text" class="search-bar" placeholder="Scan barcode or type medicine name..." style="margin-bottom: 0;">
+            </div>
+
+            <div class="medicine-grid">
+                {% for med in medicines %}
+                <div class="med-card" onclick="addToCart(this, '{{ med.name }}', {{ med.price }}, {{ med.id }}, {{ med.quantity }})">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <h4>{{ med.name }}</h4>
+                        {% if med.quantity < 10 %} 
+                            <span class="badge badge-low">Low</span>
+                        {% else %}
+                            <span class="badge badge-ok">In Stock</span>
+                        {% endif %}
+                    </div>
+                    <span class="price">₦{{ med.price|floatformat:2 }}</span>
+                    <span class="stock">{{ med.quantity }} units available</span>
+                    <div class="add-overlay">+</div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="cart-section">
+            <div class="cart-title">Order Summary</div>
+
+            <form method="POST" action="{% url 'pos_view' %}" id="checkout-form" style="display: flex; flex-direction: column; height: 100%;">
+                {% csrf_token %}
+                <input type="hidden" name="cart_data" id="cart-data-input">
+
+                <div class="cart-items" id="cart-display">
+                    <p id="empty-msg" style="color: #94a3b8; text-align: center; margin-top: 50px;">Select medicines to start</p>
+                </div>
+
+                <div class="summary-box">
+                    <div class="summary-row">
+                        <span>Items Count</span>
+                        <span id="item-count">0</span>
+                    </div>
+                    <div class="summary-row total-row">
+                        <span>Total</span>
+                        <span id="grand-total">₦0.00</span>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; margin-top: 20px;">
+                        <button 
+                            type="button" 
+                            onclick="clearCart()" 
+                            style="flex: 1; padding: 16px; border-radius: 16px; border: 1px solid #cbd5e1; background: #ffffff; color: #64748b; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s;"
+                            onmouseover="this.style.background='#f8fafc'; this.style.color='#ef4444'; this.style.borderColor='#fca5a5';"
+                            onmouseout="this.style.background='#ffffff'; this.style.color='#64748b'; this.style.borderColor='#cbd5e1';"
+                        >
+                            Cancel
+                        </button>
+                        <button type="button" onclick="submitCart()" class="btn-checkout" style="flex: 2; margin-top: 0;">
+                            Process Transaction
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+<div id="receipt-template" style="display: none;">
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #receipt-template, #receipt-template * { visibility: visible; }
+            #receipt-template {
+                display: block !important;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 80mm;
+                padding: 10px;
+                font-family: 'Courier New', Courier, monospace;
+            }
+            .receipt-header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; }
+            .receipt-table { width: 100%; margin-top: 10px; font-size: 12px; }
+            .receipt-total { border-top: 1px dashed #000; margin-top: 10px; padding-top: 10px; text-align: right; font-weight: bold; }
+        }
+    </style>
+
+    <div class="receipt-header">
+        <h2 style="margin:0;">HAVY. PHARMACY</h2>
+        <p style="font-size: 12px;">Quality Healthcare Always<br>Date: <span id="r-date"></span></p>
+    </div>
+    <table class="receipt-table">
+        <thead>
+            <tr style="text-align: left;">
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody id="r-items"></tbody>
+    </table>
+    <div class="receipt-total">
+        TOTAL: <span id="r-total"></span>
+    </div>
+    <p style="text-align: center; font-size: 10px; margin-top: 20px;">Thank you for your patronage!<br>Drugs sold are not returnable.</p>
+</div>
+
+<script>
+    let cart = [];
+
+    // 1. Add item to cart array
+    function addToCart(element, name, price, id, maxStock) {
+        const existingItem = cart.find(item => item.id === id);
+        const currentQtyInCart = existingItem ? existingItem.quantity : 0;
+
+        // Stock guard rule
+        if (currentQtyInCart >= maxStock) {
+            alert(`Cannot add more! Only ${maxStock} units of ${name} available.`);
+            return;
+        }
+
+        element.classList.add('clicked-anim');
+        setTimeout(() => element.classList.remove('clicked-anim'), 300);
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({ id, name, price, quantity: 1, maxStock: maxStock });
+        }
+
+        renderCart();
+    }
+
+    // 2. Render the cart items and summary states to the UI Layout
+    function renderCart() {
+        const display = document.getElementById('cart-display');
+        const totalDisplay = document.getElementById('grand-total');
+        const itemCountDisplay = document.getElementById('item-count');
+
+        if (cart.length === 0) {
+            display.innerHTML = '<p style="color: #94a3b8; text-align: center; margin-top: 50px;">Cart is empty</p>';
+            totalDisplay.textContent = "₦0.00";
+            itemCountDisplay.textContent = "0";
+            return;
+        }
+
+        display.innerHTML = cart.map((item, index) => `
+            <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #e2e8f0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 700; color: #1e293b;">${item.name}</div>
+                    <button type="button" onclick="removeItem(${index})" style="background: none; border: none; color: #ef4444; cursor: pointer;">✕</button>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                    <div style="font-size: 14px; color: #036a6a; font-weight: 600;">₦${(item.price * item.quantity).toFixed(2)}</div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button type="button" onclick="updateQty(${index}, -1)" style="width: 24px; height: 24px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; cursor: pointer;">-</button>
+                        <span style="font-weight: 600; min-width: 20px; text-align: center;">${item.quantity}</span>
+                        <button type="button" onclick="updateQty(${index}, 1)" style="width: 24px; height: 24px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; cursor: pointer;">+</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        totalDisplay.textContent = `₦${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+        
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        itemCountDisplay.textContent = totalItems;
+    }
+
+    // 3. Clear cart client-side memory layout explicitly
+    function clearCart() {
+        if (cart.length === 0) return;
+        
+        if (confirm("Are you sure you want to cancel and wipe this transaction?")) {
+            cart = [];
+            renderCart();
+            document.querySelector('.search-bar').focus();
+        }
+    }
+
+    function updateQty(index, change) {
+        const item = cart[index];
+        if (change > 0 && item.quantity >= item.maxStock) {
+            alert("Maximum stock reached!");
+            return;
+        }
+
+        item.quantity += change;
+        if (item.quantity <= 0) cart.splice(index, 1);
+        renderCart();
+    }
+
+    function removeItem(index) {
+        cart.splice(index, 1);
+        renderCart();
+    }
+
+    // Search filtration listener functionality
+    document.querySelector('.search-bar').addEventListener('input', function (e) {
+        const term = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.med-card');
+        cards.forEach(card => {
+            const name = card.querySelector('h4').textContent.toLowerCase();
+            card.style.display = name.includes(term) ? 'block' : 'none';
+        });
+    });
+
+    // Submit cart serialization implementation
+    function submitCart() {
+        if (cart.length === 0) {
+            alert("Oga, add something to the cart first!");
+            return;
+        }
+
+        const btn = document.querySelector('.btn-checkout');
+        btn.disabled = true;
+        btn.innerHTML = 'Processing...';
+        btn.style.opacity = '0.7';
+
+        document.getElementById('cart-data-input').value = JSON.stringify(cart);
+
+        const now = new Date();
+        document.getElementById('r-date').textContent = now.toLocaleString();
+        const receiptItems = cart.map(item => `
+            <tr>
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>₦${(item.price * item.quantity).toFixed(2)}</td>
+            </tr>
+        `).join('');
+        document.getElementById('r-items').innerHTML = receiptItems;
+        document.getElementById('r-total').textContent = document.getElementById('grand-total').textContent;
+
+        window.print();
+        document.getElementById('checkout-form').submit();
+    }
+
+    window.onload = () => {
+        document.querySelector('.search-bar').focus();
+    };
+
+    // Barcode scanner auto-submit tracking configuration rule
+    document.querySelector('.search-bar').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const visibleCards = document.querySelectorAll('.med-card[style="display: block;"], .med-card:not([style])');
+            if (visibleCards.length > 0) {
+                visibleCards[0].click();
+                this.value = '';
+            }
+        }
+    });
+</script>
