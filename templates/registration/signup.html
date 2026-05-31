@@ -148,6 +148,31 @@
         color: #aaa;
         margin-top: 4px;
     }
+
+    /* Responsive Breakpoints */
+@media (max-width: 850px) {
+    .main-container {
+        flex-direction: column-reverse; /* Put form on top, branding on bottom */
+        width: 95%;
+        height: auto; /* Allow growth */
+        max-height: 90vh; /* Don't exceed screen height */
+    }
+
+    .form-panel {
+        padding: 30px;
+    }
+
+    .side-panel {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        grid-template-columns: 1fr; /* Force single column on tiny screens */
+        gap: 0;
+    }
+}
 </style>
 
 <div class="main-container">

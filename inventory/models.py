@@ -28,7 +28,19 @@ class Medicine(models.Model):
     def is_expiring_soon(self):
         # Logic to check if medicine expires within the next 30 days
         return self.expiry_date <= timezone.now().date() + timedelta(days=30)
-
+    
+    @property
+    def is_expired(self):
+        # Explicit check: Is the expiry date in the past?
+        return self.expiry_date < timezone.now().date()
+    @property
+    def status(self):
+        if self.is_expired:
+            return 'Expired'
+        elif self.is_expiring_soon():
+            return 'Warning'
+        return 'Active'
+    
 class MedicineLog(models.Model):
     ACTION_CHOICES = [
         ('Restock', 'Restock'),

@@ -293,6 +293,58 @@
             gap: 10px;
         }
     }
+
+    /* Responsive Breakpoints */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Stack columns on tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column; /* Stack sidebar on top */
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 20px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        border-right: none;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .brand-name { margin-bottom: 0; }
+    
+    .nav-item { margin-bottom: 0; margin-left: 10px; }
+
+    .main-content { padding: 20px; }
+
+    .welcome-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+        gap: 20px;
+    }
+
+    .metrics-row {
+        flex-direction: column; /* Stack metric cards */
+    }
+}
+
+/* Fix table overflow on mobile */
+.main-content {
+    overflow-x: hidden;
+}
+
+table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
 </style>
 
 <div class="pos-container">

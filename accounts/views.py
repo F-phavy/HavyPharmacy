@@ -59,8 +59,14 @@ def dashboard(request):
         return redirect('sales_dashboard')
 
     today = timezone.now().date()
-    medicines = Medicine.objects.all().order_by('name')
     
+    # 1. NEW: Split Inventory into Active and Expired
+    # 'medicines' will only show items that are NOT expired
+    medicines = Medicine.objects.filter(expiry_date__gte=today).order_by('name')
+    
+    # 'expired_medicines' captures all items that passed their date for audit logs
+    expired_medicines = Medicine.objects.filter(expiry_date__lt=today).order_by('-expiry_date')
+
     active_staff = Attendance.objects.filter(clock_out__isnull=True).select_related('user')
     completed_shifts = Attendance.objects.filter(date=today, clock_out__isnull=False).select_related('user')
 
@@ -68,21 +74,13 @@ def dashboard(request):
     all_todays_attendance = Attendance.objects.filter(date=today).select_related('user')
     staff_earnings_history = []
 
-    # ONLY ONE LOOP HERE
     for record in all_todays_attendance:
         buffer_start = record.clock_in - timedelta(minutes=1)
+        sales_query = Sale.objects.filter(salesperson=record.user, timestamp__gte=buffer_start)
         
-        # Calculate sales for THIS specific staff member
-        sales_query = Sale.objects.filter(
-            salesperson=record.user,
-            timestamp__gte=buffer_start
-        )
-        
-        # If they finished their shift, cap the sales at their clock_out time
         if record.clock_out:
             sales_query = sales_query.filter(timestamp__lte=record.clock_out)
         
-        # Aggregate the total
         total_earned = sales_query.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
     
         staff_earnings_history.append({
@@ -104,10 +102,7 @@ def dashboard(request):
         daily_profit += (item.subtotal - (cost_price * item.quantity))
 
     # Optimized 7-Day Timeline Dataset
-    labels = []
-    sales_chart_data = []
-    profit_chart_data = []
-    
+    labels, sales_chart_data, profit_chart_data = [], [], []
     start_date = today - timedelta(days=6)
     weekly_sales = list(Sale.objects.filter(timestamp__date__range=[start_date, today]))
     weekly_items = list(SaleItem.objects.filter(sale__timestamp__date__range=[start_date, today]).select_related('medicine', 'sale'))
@@ -115,10 +110,8 @@ def dashboard(request):
     for i in range(6, -1, -1):
         target_date = today - timedelta(days=i)
         labels.append(target_date.strftime('%b %d'))
-        
         day_revenue = sum([s.total_amount for s in weekly_sales if s.timestamp.date() == target_date])
         sales_chart_data.append(float(day_revenue))
-        
         day_profit = 0
         for item in weekly_items:
             if item.sale.timestamp.date() == target_date:
@@ -128,6 +121,7 @@ def dashboard(request):
 
     context = {
         'medicines': medicines,
+        'expired_medicines': expired_medicines, # Pass the expired list to the template
         'daily_sales': daily_sales,
         'daily_profit': daily_profit,
         'low_stock_count': medicines.filter(quantity__lte=5).count(),

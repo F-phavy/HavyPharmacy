@@ -143,6 +143,21 @@
         display: block;
         text-align: center;
     }
+
+    /* Add this to the very bottom of your <style> block */
+
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column; /* Stacks the side-panel and form-panel */
+        width: 95%;             /* Fluid width on mobile */
+        height: auto;           /* Allows the container to grow with content */
+        margin: 10px auto;      /* Center it */
+    }
+
+    .form-panel {
+        padding: 40px 20px;     /* Adjust padding for smaller screens */
+    }
+}
 </style>
 
 <div class="main-container">

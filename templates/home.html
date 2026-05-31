@@ -86,6 +86,35 @@
         color: white;
         box-shadow: 0 10px 30px rgba(32, 178, 170, 0.3);
     }
+
+    /* Responsive adjustments for mobile and tablets */
+@media (max-width: 992px) {
+    .concept-card {
+        flex-direction: column; /* Stack text and icon vertically */
+        padding: 40px;
+        gap: 40px;
+        text-align: center;
+    }
+
+    .icon-wrapper {
+        width: 200px; /* Shrink icon circle */
+        height: 200px;
+    }
+
+    .icon-wrapper span {
+        font-size: 6rem !important; /* Shrink the emoji */
+    }
+
+    .teal-concept-page {
+        padding: 20px; /* Reduce screen margin */
+    }
+}
+
+@media (max-width: 576px) {
+    .display-1 {
+        font-size: 3rem !important; /* Shrink headline for phones */
+    }
+}
 </style>
 
 <div class="teal-concept-page">

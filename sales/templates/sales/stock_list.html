@@ -166,6 +166,42 @@
     .trend-item:last-child {
         border-bottom: none;
     }
+
+    /* Responsive Styles */
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 20px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        border-right: none;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .welcome-banner {
+        padding: 20px;
+        text-align: center;
+    }
+}
+
+/* Horizontal Scroll for Table on small devices */
+.list-card {
+    overflow-x: auto;
+}
+
+table {
+    min-width: 600px; /* Forces browser to show scrollbar instead of squashing columns */
+}
 </style>
 <div class="dashboard-container">
     <div class="sidebar">
