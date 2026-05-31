@@ -68,28 +68,21 @@ def dashboard(request):
     all_todays_attendance = Attendance.objects.filter(date=today).select_related('user')
     staff_earnings_history = []
 
-    # Inside your dashboard view loop:
+    # ONLY ONE LOOP HERE
     for record in all_todays_attendance:
-        # Give a 60-second buffer backwards to capture immediate check-in sales
         buffer_start = record.clock_in - timedelta(minutes=1)
-    
-        sales_query = Sale.objects.filter(
-            salesperson=record.user,
-            timestamp__gte=buffer_start
-        )
-        for record in all_todays_attendance:
-           buffer_start = record.clock_in - timedelta(minutes=1)
-    
+        
+        # Calculate sales for THIS specific staff member
         sales_query = Sale.objects.filter(
             salesperson=record.user,
             timestamp__gte=buffer_start
         )
         
-        # If they haven't clocked out, we just take everything up to NOW
+        # If they finished their shift, cap the sales at their clock_out time
         if record.clock_out:
             sales_query = sales_query.filter(timestamp__lte=record.clock_out)
         
-        # Calculate earned regardless of whether clock_out exists
+        # Aggregate the total
         total_earned = sales_query.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
     
         staff_earnings_history.append({

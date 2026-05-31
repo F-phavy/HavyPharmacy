@@ -116,3 +116,7 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+CSRF_TRUSTED_ORIGINS = ['https://havypharmacy.onrender.com']
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True

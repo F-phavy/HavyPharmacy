@@ -19,10 +19,13 @@ class HavySignUpForm(UserCreationForm):
         # Verify the secret key
         entered_key = self.cleaned_data.get('admin_key')
         
-        # If they pick Admin but the key is wrong (or empty), force them to Salesperson
-        if user.role == 'Admin' and entered_key != "HAVY2026":
+        if user.role == 'Admin' and entered_key == "HAVY2026":
+            user.is_staff = True      # REQUIRED for Admin Panel access
+            user.is_superuser = True  # Full permissions
+        else:
             user.role = 'Salesperson'
-        
+            user.is_staff = False
+            
         if commit:
             user.save()
-        return user
+        return user    

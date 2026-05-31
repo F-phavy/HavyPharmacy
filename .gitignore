@@ -1,12 +1,6 @@
-# Created by venv; see https://docs.python.org/3/library/venv.html
-# Ignore virtual environments and cache
+venv/
+.venv/
 __pycache__/
 *.pyc
-.venv/
-.env
-
-# Ignore database files
 db.sqlite3
-
-# If you have other specific files to ignore, list them individually, 
-# but DO NOT use a lone "*"
+.env
